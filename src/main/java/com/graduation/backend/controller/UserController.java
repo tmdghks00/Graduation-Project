@@ -2,6 +2,7 @@ package com.graduation.backend.controller;
 
 import com.graduation.backend.dto.*;
 import com.graduation.backend.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -33,4 +34,10 @@ public class UserController {
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
     }
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto request) {
+        String token = userService.login(request);
+        return ResponseEntity.ok(new LoginResponseDto(token));
+    }
+
 }
