@@ -1,5 +1,6 @@
 package com.graduation.backend.config;
 
+import com.graduation.backend.util.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -22,13 +23,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // CSRF 비활성화
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(new AntPathRequestMatcher("/api/users/**")).permitAll() // 회원 API 허용
-                        .anyRequest().authenticated() // 그 외 인증 필요
+                        .requestMatchers(new AntPathRequestMatcher("/api/users/**")).permitAll()
+                        .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults()); // 테스트용 기본 로그인폼 활성화
+                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil()),
+                        org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
+                .httpBasic(Customizer.withDefaults());
 
         return http.build();
+    }
+
+    @Bean
+    public JwtUtil jwtUtil() {
+        return new JwtUtil(); // 또는 @Component로 주입 받으면 생략 가능
     }
 }

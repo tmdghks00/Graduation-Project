@@ -6,7 +6,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserSignupRequest {
+public class UserSignupRequest { // 회원가입 시 보내는 데이터를 담음
     private String email;
     private String password;
     private String nickname;
