@@ -12,6 +12,7 @@
 
  로그인한 사용자만 접근 가능하도록 Spring Security + JWT 설정
 
+
 📝 게시글 기능 (CRUD)
  게시글 작성 (POST /api/posts) - 로그인한 사용자만 가능
 
@@ -23,10 +24,13 @@
 
  게시글 삭제 (DELETE /api/posts/{id}) - 작성자만 가능
 
+
 🐶 강아지 프로필 등록
  강아지 정보 등록 (POST /api/dogs)
 
 (👀 향후: 조회, 수정, 삭제 기능 추가 예정)
+
+
 
 ⚙️ 기술 스택
 Backend: Spring Boot 3, Spring Security, JPA, MySQL
