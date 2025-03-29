@@ -3,10 +3,9 @@ package com.graduation.backend.config;
 import com.graduation.backend.util.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,22 +20,29 @@ public class SecurityConfig {
     }
 
     @Bean
+    public JwtUtil jwtUtil() {
+        return new JwtUtil();
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(new AntPathRequestMatcher("/api/users/**")).permitAll()
+                        // ✅ Swagger 접근 허용
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
+                        // ✅ 회원 관련 요청 허용
+                        .requestMatchers("/api/users/**").permitAll()
+                        // ✅ 그 외 요청은 인증 필요
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil()),
-                        org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class)
-                .httpBasic(Customizer.withDefaults());
+                // ✅ JWT 필터 적용
+                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil()), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
-    }
-
-    @Bean
-    public JwtUtil jwtUtil() {
-        return new JwtUtil(); // 또는 @Component로 주입 받으면 생략 가능
     }
 }
