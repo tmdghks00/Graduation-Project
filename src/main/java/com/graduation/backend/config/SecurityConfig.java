@@ -31,13 +31,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // ✅ Swagger 접근 허용
                         .requestMatchers(
-                                "/",                // 루트 URL 허용
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
-                                "/swagger-ui.html",
-                                "/api/users/**"
+                                "/swagger-ui.html"
                         ).permitAll()
-
                         // ✅ 회원 관련 요청 허용
                         .requestMatchers("/api/users/**").permitAll()
                         // ✅ 그 외 요청은 인증 필요
