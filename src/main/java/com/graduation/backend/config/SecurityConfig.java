@@ -28,20 +28,20 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // ✅ Swagger 접근 허용
+                        // Swagger UI 허용
+                        .requestMatchers("/", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                        // WebSocket 및 SockJS 허용
                         .requestMatchers(
-                                "/",
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/swagger-ui.html"
+                                "/ws-stomp/**",              // WebSocket과 SockJS 통합 엔드포인트
+                                "/stomp-chat-test.html"      // 테스트 HTML 페이지
                         ).permitAll()
-                        // ✅ 회원 관련 요청 허용
+                        // 회원 API
                         .requestMatchers("/api/users/**").permitAll()
-                        // ✅ 그 외 요청은 인증 필요
+                        // 나머지는 인증 필요
                         .anyRequest().authenticated()
                 )
-                // ✅ JWT 필터 적용
                 .addFilterBefore(new JwtAuthenticationFilter(jwtUtil()), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
