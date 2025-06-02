@@ -29,7 +29,7 @@
 
 ---
 
-💬 1:1 실시간 채팅 기능 (완료)
+### 💬 1:1 실시간 채팅 기능 (완료)
 웹소켓 연결 /ws-stomp, STOMP 엔드포인트 설정 완료
 
 WebSocketBrokerConfig, StompController, StompHandler 구성 완료
@@ -38,7 +38,7 @@ stomp-chat-test.html 통해 메시지 송수신 테스트 완료 (말풍선 UI�
 
 ---
 
-🗃️ MySQL DB 테이블 (완료)
+### 🗃️ MySQL DB 테이블 (완료)
 user, post, dog_profile, chat_message, match, review, alert 테이블 생성 확인
 
 외래키 관계 모두 적절하게 설정됨
