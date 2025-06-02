@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>STOMP Chat Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        #chat-container {
+            width: 800px;
+            margin: 0 auto;
+        }
+
+        #messages {
+            width: 100%;
+            height: 600px; /* ✅ 기존보다 2배로 확대 (기존 300px 예상) */
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: auto;
+            background-color: #fdfdfd;
+            border-radius: 10px;
+        }
+
+        .message {
+            max-width: 80%;
+            margin: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            clear: both;
+        }
+
+        .sender {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .me {
+            background-color: #d8fdd8;
+            float: right;
+            text-align: right;
+        }
+
+        .other {
+            background-color: #eeeeee;
+            float: left;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+<div id="chat-container">
+    <h2>🐾 PawMate WebSocket Chat Test</h2>
+
+    <div>
+        <label>Chat Room ID:</label>
+        <input type="number" id="chatRoomId" value="1" />
+    </div>
+    <div>
+        <label>Sender:</label>
+        <input type="text" id="sender" value="Min" />
+    </div>
+    <div>
+        <label>Message:</label>
+        <input type="text" id="message" />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <hr />
+    <button onclick="connect()">🔌 Connect</button>
+    <button onclick="disconnect()">❌ Disconnect</button>
+    <button onclick="clearMessages()">🧹 Clear Messages</button>
+
+    <h3>📥 Received Messages</h3>
+    <div id="messages"></div>
+</div>
+
+<script>
+    let stompClient = null;
+
+    function connect() {
+        const socket = new SockJS('http://localhost:8080/ws-stomp');
+        stompClient = Stomp.over(socket);
+
+        const chatRoomId = document.getElementById('chatRoomId').value;
+
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/sub/chat/' + chatRoomId, function (chat) {
+                const msg = JSON.parse(chat.body);
+                displayMessage(msg.sender, msg.message);
+            });
+        });
+    }
+
+    function sendMessage() {
+        const chatRoomId = document.getElementById('chatRoomId').value;
+        const sender = document.getElementById('sender').value;
+        const message = document.getElementById('message').value;
+
+        stompClient.send('/pub/chat/' + chatRoomId, {}, JSON.stringify({
+            chatRoomId: parseInt(chatRoomId),
+            sender: sender,
+            message: message
+        }));
+    }
+
+    function disconnect() {
+        if (stompClient !== null) {
+            stompClient.disconnect();
+        }
+        console.log("Disconnected");
+    }
+
+    function clearMessages() {
+        document.getElementById('messages').innerHTML = "";
+    }
+
+    function displayMessage(sender, message) {
+        const currentUser = document.getElementById('sender').value;
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message');
+        messageDiv.classList.add(sender === currentUser ? 'me' : 'other');
+        messageDiv.innerHTML = `<div class="sender">${sender}</div><div>${message}</div>`;
+        document.getElementById('messages').appendChild(messageDiv);
+        document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+    }
+</script>
+</body>
+</html>
