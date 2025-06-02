@@ -29,6 +29,24 @@
 
 ---
 
+### 💬 1:1 실시간 채팅 기능 (완료)
+웹소켓 연결 /ws-stomp, STOMP 엔드포인트 설정 완료
+
+WebSocketBrokerConfig, StompController, StompHandler 구성 완료
+
+stomp-chat-test.html 통해 메시지 송수신 테스트 완료 (말풍선 UI도 적용 완료됨 ✅)
+
+---
+
+### 🗃️ MySQL DB 테이블 (완료)
+user, post, dog_profile, chat_message, match, review, alert 테이블 생성 확인
+
+외래키 관계 모두 적절하게 설정됨
+
+application.properties에서 DB 연결 설정 정상
+
+
+
 ### ⚙️ 기술 스택
 - Backend: Spring Boot 3, Spring Security, JPA, MySQL
 - JWT 인증: `jjwt` 라이브러리 사용
