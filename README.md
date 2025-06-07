@@ -1,54 +1,100 @@
+# 🐾 PawMate 백엔드
+
+강아지 커뮤니티 및 미팅 플랫폼 **PawMate**의 백엔드 서버입니다.  
+회원 가입부터 실시간 채팅, 강아지 프로필 등록까지 다양한 기능을 제공합니다.
+
+---
+
 ## ✅ 구현된 기능
 
 ### 🔐 사용자 인증 및 회원 기능
-- 사용자 인증 및 회원가입: `POST /api/users/signup`
-- 로그인 → JWT 토큰 발급: `POST /api/users/login`
+
+- 회원가입: `POST /api/users/signup`
+- 로그인 (JWT 발급): `POST /api/users/login`
 - 사용자 정보 조회: `GET /api/users/{id}`
-- 사용자 닉네임 수정: `PUT /api/users/{id}?nickname=...`
-- 사용자 삭제: `DELETE /api/users/{id}`
-- 로그인한 사용자만 접근 가능하도록 Spring Security + JWT 설정
+- 닉네임 수정: `PUT /api/users/{id}?nickname=...`
+- 회원 탈퇴: `DELETE /api/users/{id}`
+- 로그인 사용자 인증: Spring Security + JWT 적용
 
 ---
 
-### 📝 게시글 기능 (CRUD)
-- 게시글 작성: `POST /api/posts`  
-  ↳ **로그인한 사용자만 가능**
+### 📝 커뮤니티 게시글 기능 (CRUD)
+
+- 게시글 작성: `POST /api/posts` (*로그인 필수*)
 - 게시글 전체 조회: `GET /api/posts`
-- 게시글 단건 조회: `GET /api/posts/{id}`
-- 게시글 수정: `PUT /api/posts/{id}`  
-  ↳ **작성자만 가능**
-- 게시글 삭제: `DELETE /api/posts/{id}`  
-  ↳ **작성자만 가능**
+- 게시글 상세 조회: `GET /api/posts/{id}`
+- 게시글 수정: `PUT /api/posts/{id}` (*작성자만 가능*)
+- 게시글 삭제: `DELETE /api/posts/{id}` (*작성자만 가능*)
 
 ---
 
-### 🐶 강아지 프로필 등록
-- 강아지 정보 등록: `POST /api/dogs`
+### 🐶 강아지 프로필 기능
 
-> 🔧 향후: 조회, 수정, 삭제 기능 추가 예정
-
----
-
-### 💬 1:1 실시간 채팅 기능 (완료)
-웹소켓 연결 /ws-stomp, STOMP 엔드포인트 설정 완료
-
-WebSocketBrokerConfig, StompController, StompHandler 구성 완료
-
-stomp-chat-test.html 통해 메시지 송수신 테스트 완료 (말풍선 UI도 적용 완료됨 ✅)
+- 강아지 등록: `POST /api/dogs`
+- 🔧 예정 기능:
+  - 강아지 조회: `GET /api/dogs/{id}`
+  - 강아지 수정: `PUT /api/dogs/{id}`
+  - 강아지 삭제: `DELETE /api/dogs/{id}`
 
 ---
 
-### 🗃️ MySQL DB 테이블 (완료)
-user, post, dog_profile, chat_message, match, review, alert 테이블 생성 확인
+### 💬 실시간 1:1 채팅 기능
 
-외래키 관계 모두 적절하게 설정됨
+- WebSocket 연결: `/ws-stomp`
+- 메시지 발신: `/pub/chat/{chatRoomId}`
+- 메시지 수신 구독: `/sub/chat/{chatRoomId}`
+- 채팅 테스트 페이지: `stomp-chat-test.html`
+- 구성: `WebSocketBrokerConfig`, `StompController`, `StompHandler`
 
-application.properties에서 DB 연결 설정 정상
+---
 
+### 💘 매칭 기능
 
+- 매칭 로직 기본 구현 완료
+- `MatchService`, `MatchController`, `MatchRepository` 구성
+- 🔧 매칭 기준 정의 및 UI 연동은 추후 예정
 
-### ⚙️ 기술 스택
-- Backend: Spring Boot 3, Spring Security, JPA, MySQL
-- JWT 인증: `jjwt` 라이브러리 사용
-- 빌드 도구: Gradle
-- IDE: IntelliJ IDEA
+---
+
+### 📝 리뷰 기능
+
+- 리뷰 등록/조회/삭제 기능 구현 완료
+- 리뷰 대상자 및 작성자 정보 포함
+- 구성: `ReviewService`, `ReviewController`, `ReviewRepository`
+
+---
+
+### 🚨 긴급 알림 기능
+
+- 알림 저장 기능 구현 (`AlertService`, `AlertRepository`)
+- 🔧 실시간 알림 전송/푸시 기능은 추후 구현 예정
+
+---
+
+### 🗃️ MySQL 데이터베이스 테이블
+
+- 테이블 구성:
+  - `user`
+  - `post`
+  - `dog_profile`
+  - `chat_message`
+  - `match`
+  - `review`
+  - `alert`
+- 외래키 포함 관계 정상 설정
+- AWS RDS 연동 (application.properties 확인)
+
+---
+
+## ⚙️ 기술 스택
+
+| 항목 | 내용 |
+|------|------|
+| Backend | Spring Boot 3, Spring Security |
+| 인증 | JWT (`jjwt` 라이브러리 사용) |
+| ORM | JPA (Hibernate) |
+| DB | MySQL (AWS RDS) |
+| 실시간 통신 | WebSocket + STOMP |
+| API 문서화 | Swagger 사용 |
+| Build Tool | Gradle |
+| IDE | IntelliJ IDEA |
