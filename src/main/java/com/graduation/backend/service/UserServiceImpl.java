@@ -20,6 +20,7 @@ public class UserServiceImpl implements UserService {
         this.jwtUtil = jwtUtil;
     }
 
+    // 회원가입 처리 (비밀번호 암호화 및 "local" provider 설정)
     @Override
     public void signup(UserSignupRequest request) {
         User user = User.builder()
@@ -31,6 +32,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    // 사용자 ID로 정보 조회 후 DTO로 변환
     @Override
     public UserDto getUser(Long id) {
         User user = userRepository.findById(id)
@@ -38,6 +40,7 @@ public class UserServiceImpl implements UserService {
         return new UserDto(user.getEmail(), user.getNickname());
     }
 
+    // 닉네임 수정
     @Override
     public void updateNickname(Long id, String nickname) {
         User user = userRepository.findById(id)
@@ -46,11 +49,13 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    // 회원 탈퇴
     @Override
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
 
+    // 로그인 처리: 이메일 존재 여부 확인 → 비밀번호 검증 → JWT 생성 후 반환
     @Override
     public String login(LoginRequestDto request) {
         User user = userRepository.findByEmail(request.getEmail())
@@ -62,5 +67,4 @@ public class UserServiceImpl implements UserService {
 
         return jwtUtil.createToken(user.getEmail());
     }
-
 }

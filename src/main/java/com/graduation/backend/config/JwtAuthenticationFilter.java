@@ -26,21 +26,25 @@ public class JwtAuthenticationFilter extends GenericFilter {
         HttpServletRequest httpReq = (HttpServletRequest) request;
         String token = resolveToken(httpReq);
 
-        if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            String email = jwtUtil.getEmailFromToken(token);
+        try {
+            if (token != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                String email = jwtUtil.getEmailFromToken(token);
+                httpReq.setAttribute("email", email);
 
-            httpReq.setAttribute("email", email);
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(email, null, null);
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpReq));
 
-            // 인증 객체 생성
-            UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(email, null, null);
-            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpReq));
-
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+        } catch (Exception e) {
+            System.out.println("❗ JWT 필터 오류: " + e.getMessage());
+            // 잘못된 토큰이면 무시하고 다음 필터로 넘김 (403 방지)
         }
 
         chain.doFilter(request, response);
     }
+
 
     private String resolveToken(HttpServletRequest request) {
         String bearer = request.getHeader("Authorization");

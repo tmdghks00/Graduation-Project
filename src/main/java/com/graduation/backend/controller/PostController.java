@@ -20,6 +20,7 @@ public class PostController {
     }
 
     @PostMapping
+    // 게시글 생성 (로그인된 유저 이메일 추출)
     public ResponseEntity<Post> createPost(@RequestBody PostDto dto, HttpServletRequest request) {
         String userEmail = (String) request.getAttribute("email");
         Post post = postService.createPost(dto, userEmail);
@@ -27,6 +28,7 @@ public class PostController {
     }
 
     @GetMapping
+    // 전체 게시글 목록 조회
     public List<Post> getAllPosts() {
         return postService.getAllPosts();
     }
@@ -37,6 +39,7 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
+    // 게시글 수정
     public ResponseEntity<Post> updatePost(@PathVariable Long id, @RequestBody PostDto dto, HttpServletRequest request) {
         String userEmail = (String) request.getAttribute("email");
         Post updatedPost = postService.updatePost(id, dto, userEmail);
@@ -44,6 +47,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
+    // 게시글 삭제
     public ResponseEntity<Void> deletePost(@PathVariable Long id, HttpServletRequest request) {
         String userEmail = (String) request.getAttribute("email");
         postService.deletePost(id, userEmail);

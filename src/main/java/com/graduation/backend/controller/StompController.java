@@ -16,6 +16,7 @@ public class StompController {
 
     @MessageMapping("/chat/{chatRoomId}")       // 클라이언트 → 서버로 /pub/chat/1 전송 시 매핑
     @SendTo("/sub/chat/{chatRoomId}")           // 서버 → 클라이언트 브로드캐스트 경로
+    // 채팅 메시지를 받으면 구독자에게 전송
     public ChatDto sendMessage(
             @DestinationVariable Long chatRoomId,
             @Payload ChatDto chatDto
