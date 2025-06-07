@@ -3,17 +3,14 @@ package com.graduation.backend.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-/**
- * 강아지 프로필 정보를 저장하는 엔티티
- */
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class DogProfile {
 
-    // 기본 키 (자동 증가 ID)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,20 +18,20 @@ public class DogProfile {
     // 강아지 이름
     private String name;
 
-    // 강아지 나이
+    // 품종
+    private String breed;
+
+    // 나이
     private int age;
 
-    // 성격 설명
-    private String personality;
+    // 성별
+    private String gender;
 
-    // 중성화 여부
-    private boolean neutered;
+    // 이미지 URL
+    private String imageUrl;
 
-    // DTO를 엔티티로 변환하는 생성자
-    public DogProfile(com.graduation.backend.dto.DogProfileDto dto) {
-        this.name = dto.getName();
-        this.age = dto.getAge();
-        this.personality = dto.getPersonality();
-        this.neutered = dto.isNeutered();
-    }
+    // 사용자 연관관계
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 }

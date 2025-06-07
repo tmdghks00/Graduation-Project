@@ -1,5 +1,6 @@
 package com.graduation.backend.dto;
 
+import com.graduation.backend.entity.DogProfile;
 import lombok.*;
 
 // 강아지 프로필 정보를 담는 DTO 클래스
@@ -9,15 +10,24 @@ import lombok.*;
 @AllArgsConstructor
 public class DogProfileDto {
 
-    // 강아지 이름
+    private Long id;
+    private Long userId;
     private String name;
-
-    // 강아지 나이
+    private String breed;
     private int age;
+    private String gender;
+    private String imageUrl;
 
-    // 강아지 성격 설명 (ex. 활발함, 차분함 등)
-    private String personality;
-
-    // 중성화 여부 (true: 중성화됨, false: 안됨)
-    private boolean neutered;
+    // Entity → DTO 변환
+    public static DogProfileDto from(DogProfile dog) {
+        return new DogProfileDto(
+                dog.getId(),
+                dog.getUser().getId(),
+                dog.getName(),
+                dog.getBreed(),
+                dog.getAge(),
+                dog.getGender(),
+                dog.getImageUrl()
+        );
+    }
 }
